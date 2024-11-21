@@ -89,10 +89,10 @@ check-all-test-repo: check-fhevm-solidity
 generate-fhe-keys-registry-dev-image:
 ifeq ($(KEY_GEN),false)
 	@echo "KEY_GEN is false, executing corresponding commands..."
-	@bash ./scripts/copy_fhe_keys.sh $(KMS_DEV_VERSION) $(PWD)/network-fhe-keys $(PWD)/kms-fhe-keys
+	@bash ./copy_fhe_keys.sh $(KMS_DEV_VERSION) $(PWD)/network-fhe-keys $(PWD)/kms-fhe-keys
 else ifeq ($(KEY_GEN),true)
 	@echo "KEY_GEN is true, executing corresponding commands..."
-	@bash ./scripts/prepare_volumes_from_kms_core.sh $(KMS_DEV_VERSION) $(PWD)/network-fhe-keys $(PWD)/kms-fhe-keys
+	@bash ./prepare_volumes_from_kms_core.sh $(KMS_DEV_VERSION) $(PWD)/network-fhe-keys $(PWD)/kms-fhe-keys
 else
 	@echo "KEY_GEN is set to an unrecognized value: $(KEY_GEN)"
 endif
@@ -102,10 +102,10 @@ run-full:
 	$(MAKE) generate-fhe-keys-registry-dev-image
 ifeq ($(KEY_GEN),false)
 	@echo "KEY_GEN is false, executing corresponding commands..."
-	@docker compose  -f docker-compose/docker-compose-full.yml  up --detach
+	@docker compose  -f docker-compose-full.yml  up --detach
 else ifeq ($(KEY_GEN),true)
 	@echo "KEY_GEN is true, mounting fhe keys into kms-core..."
-	@docker compose  -f docker-compose/docker-compose-full.yml -f docker-compose/docker-compose-full.override.yml up --detach
+	@docker compose  -f docker-compose-full.yml -f docker-compose-full.override.yml up --detach
 else
 	@echo "KEY_GEN is set to an unrecognized value: $(KEY_GEN)"
 endif
@@ -114,13 +114,7 @@ endif
 	sleep 5
 
 stop-full:
-	@docker compose  -f docker-compose/docker-compose-full.yml down
-
-TEST_FILE := run_tests.sh
-TEST_IF_FROM_REGISTRY :=
-
-run-e2e-test: check-all-test-repo
-	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test
+	@docker compose  -f docker-compose-full.yml down
 
 
 install-packages:
@@ -133,24 +127,9 @@ install-packages:
 prepare-e2e-test: check-all-test-repo
 	$(MAKE) install-packages
 	@sleep 5
-	@./scripts/fund_test_addresses_docker.sh
+	@./fund_test_addresses_docker.sh
 	@cd $(FHEVM_SOLIDITY_PATH) && cp .env.example .env
 	@cd $(FHEVM_SOLIDITY_PATH) && ./setup-local-fhevm.sh
-
-run-async-test:
-	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test --grep 'test async decrypt uint8'
-
-run-true-input-async-test:
-	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test --grep 'test async decrypt uint64 non-trivial'
-
-e2e-test:
-	@$(MAKE) check-all-test-repo
-	$(MAKE) run-full
-	$(MAKE) prepare-e2e-test
-	$(MAKE) run-e2e-test
-	$(MAKE) stop-full
-
-
 
 clean:
 	$(MAKE) stop-full
@@ -164,4 +143,3 @@ clean:
 print-info:
 	@echo 'KMS_DEV_VERSION: $(KMS_DEV_VERSION) for KEY_GEN---extracted from Makefile'
 	@echo 'FHEVM_SOLIDITY_VERSION: $(FHEVM_SOLIDITY_VERSION) ---extracted from Makefile'
-	@bash scripts/get_repository_info.sh fhevm $(FHEVM_SOLIDITY_PATH)

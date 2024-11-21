@@ -1,23 +1,3 @@
-<p align="center">
-<!-- product name logo -->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/d7c9d88b-fc49-46f4-802b-65d1c944e2d9">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/b50f98a7-4190-492c-969b-7762f522dcf7">
-  <img width=600 alt="Zama fhEVM & KMS">
-</picture>
-</p>
-
----
-
-<p align="center">
-  <a href="./fhevm-whitepaper.pdf"> 📃 Read white paper</a> |<a href="https://docs.zama.ai/fhevm"> 📒 Documentation</a> | <a href="https://zama.ai/community"> 💛 Community support</a> | <a href="https://github.com/zama-ai/awesome-zama"> 📚 FHE resources by Zama</a>
-</p>
-
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-BSD--3--Clause--Clear-%23ffb243?style=flat-square"></a>
-  <a href="https://github.com/zama-ai/bounty-program"><img src="https://img.shields.io/badge/Contribute-Zama%20Bounty%20Program-%23ffd208?style=flat-square"></a>
-</p>
-
 ## About
 
 > [!Warning]
@@ -55,19 +35,14 @@ The light client package handles the logic of sequentially verifying block heade
   - [Key generation](#key-generation)
   - [Fast run and test](#fast-run-and-test)
   - [Trouble shooting](#trouble-shooting)
-  - [Init fhEVM-native](#init-fhevm-native)
   - [Run fhEVM-native + KMS components](#run-fhevm-native--kms-components)
   - [Stop fhEVM-native + KMS](#stop-fhevm-native--kms)
   - [Fresh start](#fresh-start)
-  - [Test using fhevm](#test-using-fhevm)
 - **[Resources](#resources)**
-  - [Presentations](#presentations)
   - [Theory](#theory)
 - **[Working with KMS](#working-with-kms)**
   - [Disclaimers](#disclaimers)
   - [Citations](#citations)
-  - [License](#license)
-- **[Support](#support)**
   <br></br>
   
 ## Getting started
@@ -93,20 +68,10 @@ Execute the following commands:
 make run-full
 # Deploy ACL, Gateway ..., please wait until the end before testing!!!
 make prepare-e2e-test
-# This test could fail (first event catch is buggy - we are on it)
-make run-async-test
-# This one is working
-make run-async-test
-# A non trivial test
-make run-true-input-async-test
-# Manual test
-cd work_dir/fhevm & npx hardhat test --grep 'test async decrypt uint32'
-cd work_dir/fhevm & npx hardhat test --grep 'test async decrypt uint64'
-cd work_dir/fhevm & npx hardhat test --grep 'test async decrypt several addresses'
 ```
 
 > [!TIP]  
-> If one of the tests is blocked after a few seconds, check the logs of the gateway with `docker logs zama-dev-gateway-1 -f`. If you do not see any progress after a line like 
+> If one of the tests is blocked after a few seconds, check the logs of the gateway with `docker logs op-rollup-gateway-1 -f`. If you do not see any progress after a line like 
 `🍊 Waiting for callback from KMS, txn_id: "85fa7..."`; **stop the test and retry**. This is a known issue and we will fix it soon! 
 
 
@@ -115,7 +80,7 @@ cd work_dir/fhevm & npx hardhat test --grep 'test async decrypt several addresse
 
 ```bash
 # Check logs for Gateway
-docker logs zama-dev-gateway-1 -f
+docker logs op-rollup-gateway-1 -f
 
 # On the second try you should see
 # 2024-07-04T09:29:06.649194Z  INFO gateway::events::manager: ⭐ event_decryption: 1
@@ -126,9 +91,6 @@ docker logs zama-dev-gateway-1 -f
 # 2024-07-04T09:29:06.667927Z  INFO gateway::blockchain::kms_blockchain: 🍊 Decrypting ciphertext of size: 33080
 # 2024-07-04T09:29:06.670033Z  INFO execute_contract: kms_blockchain_client::client: Body Raw bytes length: 609
 
-
-# Check the logs for the node
-docker logs zama-dev-fhevm-validator-1 -f
 ```
 
 </p>
@@ -181,36 +143,23 @@ Error: The nonce of the deployer account is not null. Please use another deploye
 ```
 Then something went wrong in a step and you will need to run `make clean` and then start over the flow described [above](#fast-run-and-test).
 
-### Init fhEVM-native
-
-```bash
-make init-ethermint-node
-```
-
-Initialize and generate/copy FHE keys based on `KEY_GEN` value in `.env`.
-
-> [!NOTE]
-> If `KEY_GEN` is set to `true`, ensure to have at least 15 GB of empty RAM to generate the keys. On Mac, do not forget to increase the allocated RAM to the docker process.
 
 ### Run fhEVM-native + KMS components
 
 ```bash
 make run-full
-# Check the logs for the node
-docker logs zama-dev-fhevm-validator-1 -f
 # Check logs for Gateway
-docker logs zama-dev-gateway-1 -f
+docker logs op-rollup-gateway-1 -f
 ```
 
 You should see the following docker images:
 
 ```
-zama-dev-gateway-1	ghcr.io/zama-ai/kms-blockchain-gateway-dev:v0.8.1-rc4
-zama-dev-connector-1	ghcr.io/zama-ai/kms-blockchain-connector-dev:v0.8.1-rc4
-zama-dev-fhevm-validator-1	ghcr.io/zama-ai/ethermint-node:v0.5.1
-zama-dev-kms-core-1	ghcr.io/zama-ai/kms-service-dev:v0.8.1-rc4
-zama-dev-kms-validator-1	ghcr.io/zama-ai/kms-blockchain-asc-dev:v0.8.1-rc4
-zama-dev-gateway-store-1	ghcr.io/zama-ai/kms-blockchain-gateway-dev:v0.8.1-rc4
+op-rollup-gateway-1	ghcr.io/zama-ai/kms-blockchain-gateway-dev:v0.8.1-rc4
+op-rollup-connector-1	ghcr.io/zama-ai/kms-blockchain-connector-dev:v0.8.1-rc4
+op-rollup-kms-core-1	ghcr.io/zama-ai/kms-service-dev:v0.8.1-rc4
+op-rollup-kms-validator-1	ghcr.io/zama-ai/kms-blockchain-asc-dev:v0.8.1-rc4
+op-rollup-gateway-store-1	ghcr.io/zama-ai/kms-blockchain-gateway-dev:v0.8.1-rc4
 ```
 
 ### Stop fhEVM-native + KMS
@@ -229,27 +178,7 @@ make clean
 > FHE keys are in res/keys folder, delete them to regenerate new keys at ```make run-full``` step.
 
 
-### Test using fhevm
-
-```bash
-# if not executed before
-make run-full
-# In new terminal
-make run-e2e-test
-```
-
-or in one command
-
-```bash
-make e2e-test
-```
-<br></br>
-
 ## Resources
-
-### Presentations
-
-- [EthCC 2024 TKMS presentation](EthCC24-tkms.pdf)
 
 ### Theory
 - [Noah's Ark: Efficient Threshold-FHE Using Noise Flooding](https://eprint.iacr.org/2023/815)
@@ -280,35 +209,3 @@ To cite the KMS in academic papers, please use the following entry:
   note={\url{https://github.com/zama-ai/kms-core}},
 }
 ```
-
-### License
-This software is distributed under the **BSD-3-Clause-Clear** license. Read [this](LICENSE.txt) for more details.
-
-#### FAQ
-**Is Zama’s technology free to use?**
->Zama’s libraries are free to use under the BSD 3-Clause Clear license only for development, research, prototyping, and experimentation purposes. However, for any commercial use of Zama's open source code, companies must purchase Zama’s commercial patent license.
->
->Everything we do is open source and we are very transparent on what it means for our users, you can read more about how we monetize our open source products at Zama in [this blog post](https://www.zama.ai/post/open-source).
-
-**What do I need to do if I want to use Zama’s technology for commercial purposes?**
->To commercially use Zama’s technology you need to be granted Zama’s patent license. Please contact us hello@zama.ai for more information.
-
-**Do you file IP on your technology?**
->Yes, all Zama’s technologies are patented.
-
-**Can you customize a solution for my specific use case?**
->We are open to collaborating and advancing the FHE space with our partners. If you have specific needs, please email us at hello@zama.ai.
-
-<br></br>
-
-## Support
-
-<a target="_blank" href="https://community.zama.ai">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/zama-ai/tfhe-rs/assets/157474013/08656d0a-3f44-4126-b8b6-8c601dff5380">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/zama-ai/tfhe-rs/assets/157474013/1c9c9308-50ac-4aab-a4b9-469bb8c536a4">
-  <img alt="Support">
-</picture>
-</a>
-
-🌟 If you find this project helpful or interesting, please consider giving it a star on GitHub! Your support helps to grow the community and motivates further development.

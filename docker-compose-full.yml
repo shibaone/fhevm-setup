@@ -128,7 +128,7 @@ services:
     entrypoint:
       - /bin/sh
       - -c
-      - mkdir -p /logs && geth init --datadir=datadir genesis.json && geth
+      - mkdir -p ./op-geth/keys && cp /network-fhe-keys/* ./op-geth/keys/ && mkdir -p /logs && geth init --datadir=datadir genesis.json && geth
     environment:
       GETH_AUTHRPC_ADDR: 0.0.0.0
       GETH_AUTHRPC_JWTSECRET: /root/jwt.txt

@@ -127,7 +127,6 @@ install-packages:
 prepare-e2e-test: check-all-test-repo
 	$(MAKE) install-packages
 	@sleep 5
-	@./fund_test_addresses_docker.sh
 	@cd $(FHEVM_SOLIDITY_PATH) && cp .env.example .env
 	@cd $(FHEVM_SOLIDITY_PATH) && ./setup-local-fhevm.sh
 

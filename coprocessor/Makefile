@@ -203,7 +203,10 @@ run-async-test:
 
 
 run-true-input-async-test:
-	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test --grep 'test async decrypt uint64 non-trivial'
+	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test --grep 'test async decrypt uint64 non-trivial' --network localCoprocessor
+
+run-transfer-test:
+	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test --grep 'should transfer tokens between two users' --network localCoprocessor
 
 run-all-tests:
 	@cd $(FHEVM_SOLIDITY_PATH) && npx hardhat test --grep 'test async decrypt bool$'

@@ -1,0 +1,10 @@
+{
+  "GSAdminAddress": "0x20bc0db24353b5D894915c4eAb2d73c1e7211777",
+  "GSAdminPrivateKey": "0x9cdade91b1e2da4daf51de8ba5b5e7fc63675bd722574249e6e97f63844aa634",
+  "GSBatcherAddress": "0xaf59ac96F05540b110594E0f0FA02FFdF13c5121",
+  "GSBatcherPrivateKey": "0x47e4864923705224712434b5a36fc5f8d05d22b102c1fe1124720c0548594fba",
+  "GSProposerAddress": "0x00d631b7f4878E00767F21Dab23e5F33BaF2b9da",
+  "GSProposerPrivateKey": "0xe5667f0e9fef9b9a6a157a2d5cef4e5e76913c91f9e4fda5bb644fc75a3a87e7",
+  "GSSequencerAddress": "0xca6366Af99B949B007323fB9087fc1Cc88f4c673",
+  "GSSequencerPrivateKey": "0x92f0ded5b7d1e5f4197cf08f6340ee92dce3202dcd9728575036472c7d553a6f"
+}

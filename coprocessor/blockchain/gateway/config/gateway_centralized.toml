@@ -114,8 +114,8 @@ address = "http://kms-blockchain-validator:9090"
 # Should be removed as part of https://github.com/zama-ai/fhevm/issues/548
 # Key ID used within the KMS.
 # Identifies the specific key to be used for cryptographic operations within the KMS.
-key_id = "4de8f079b1d345c9ed341c400e90fec9edd15775"
-crs_id = "cfac312251738b71ff7d12e57b7d6eb5f881b7d8"
+key_id = "b60b5d10a064477bf10cd5149a687a1b296c7ebd"
+crs_id = "ab9256b7dac2afbcb6882c7b4fd88193f1bd1b64"
 
 # List of prefixed of URL endpoints for the public storage of the KMS.
 # The key in the map is the MPC ID of the party. I.e. [1; amount of parties]

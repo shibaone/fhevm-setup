@@ -27,17 +27,89 @@ services:
       - --coprocessor-private-key=/usr/share/coprocessor.key
   fhevm-geth:
     container_name: ${DOCKER_COMPOSE_PROJECT}-fhevm-geth
-    image: ghcr.io/zama-ai/go-ethereum-coprocessor-dev:v0.1.1
-    volumes:
-      - ../blockchain/geth/entrypoint.sh:/entrypoint.sh
+    image: shib-devrollup-go-eth-fhe:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+      - mkdir -p /logs && geth init --state.scheme=hash --datadir=datadir genesis.json && geth
     environment:
+      - GETH_AUTHRPC_ADDR=0.0.0.0
+      - GETH_AUTHRPC_JWTSECRET=/root/jwt.txt
+      - GETH_AUTHRPC_PORT=8551
+      - GETH_AUTHRPC_VHOSTS=*
+      - GETH_DATADIR=/datadir
+      - GETH_GCMODE=archive
+      - GETH_HTTP=true
+      - GETH_HTTP_ADDR=0.0.0.0
+      - GETH_HTTP_API=web3,debug,eth,txpool,net,engine
+      - GETH_HTTP_CORSDOMAIN=*
+      - GETH_HTTP_PORT=8545
+      - GETH_HTTP_VHOSTS=*
+      - GETH_MAXPEERS=0
+      - GETH_NETWORKID=67739
+      - GETH_NODISCOVER=true
+      - GETH_ROLLUP_DISABLETXPOOLGOSSIP=true
+      - GETH_SYNCMODE=full
+      - GETH_WS=true
+      - GETH_WS_ADDR=0.0.0.0
+      - GETH_WS_API=debug,eth,txpool,net,engine
+      - GETH_WS_ORIGINS=*
+      - GETH_WS_PORT=8546
       - FHEVM_COPROCESSOR_API_KEY=a1503fb6-d79b-4e9e-826d-44cf262f3e05
       - FHEVM_COPROCESSOR_URL=fhevm-coprocessor:50052
       - COPROCESSOR_CONTRACT_ADDRESS=0x596E6682c72946AF006B27C131793F2b62527A4b
       - ACL_CONTRACT_ADDRESS=0x339EcE85B9E11a3A3AA557582784a15d7F82AAf2
+    env_file:
+      - ../.env
+    volumes:
+      - type: bind
+        source: ../op-geth
+        target: /datadir
+      - type: bind
+        source: ../jwt.txt
+        target: /root/jwt.txt
+      - type: bind
+        source: ../genesis.json
+        target: /genesis.json
     ports:
       - '8745:8545'
       - '8746:8546'
+      - '8551:8551'
+  op-node:
+    entrypoint:
+      - op-node
+    environment:
+      OP_NODE_L1_BEACON_IGNORE: "true"
+      OP_NODE_L1_ETH_RPC: https://puppynet.shibrpc.com
+      OP_NODE_L1_HTTP_POLL_INTERVAL: 5s
+      OP_NODE_L1_RPC_KIND: basic
+      OP_NODE_L1_TRUST_RPC: "false"
+      OP_NODE_L2_ENGINE_AUTH: /app/jwt.txt
+      OP_NODE_L2_ENGINE_RPC: http://fhevm-geth:8551
+      OP_NODE_P2P_DISABLE: "true"
+      OP_NODE_ROLLUP_CONFIG: /app/rollup.json
+      OP_NODE_RPC_ADDR: 0.0.0.0
+      OP_NODE_RPC_ENABLE_ADMIN: "true"
+      OP_NODE_RPC_PORT: "8547"
+      OP_NODE_SEQUENCER_ENABLED: "true"
+      OP_NODE_SEQUENCER_L1_CONFS: "5"
+      OP_NODE_VERIFIER_L1_CONFS: "4"
+    env_file:
+      - ../.env
+    image: 623062962206.dkr.ecr.us-east-1.amazonaws.com/op-node:dev
+    ports:
+      - target: 8547
+        published: "8547"
+        protocol: tcp
+    restart: unless-stopped
+    stop_grace_period: 5m0s
+    volumes:
+      - type: bind
+        source: ../jwt.txt
+        target: /app/jwt.txt
+      - type: bind
+        source: ../rollup.json
+        target: /app/rollup.json
 volumes:
   fhevm_coprocessor_db:
     driver: local

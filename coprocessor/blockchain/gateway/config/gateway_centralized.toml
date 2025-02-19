@@ -14,7 +14,7 @@ api_url = "0.0.0.0:7077"
 [ethereum]
 
 # chain id
-chain_id = 12345
+chain_id = 55482
 
 # EIP712 salt, optional
 # A static salt value used for EIP712 signing in order to distingush different dApps
@@ -114,8 +114,8 @@ address = "http://kms-blockchain-validator:9090"
 # Should be removed as part of https://github.com/zama-ai/fhevm/issues/548
 # Key ID used within the KMS.
 # Identifies the specific key to be used for cryptographic operations within the KMS.
-key_id = "b60b5d10a064477bf10cd5149a687a1b296c7ebd"
-crs_id = "ab9256b7dac2afbcb6882c7b4fd88193f1bd1b64"
+key_id = "3bd1569af20e9c8a4c3da120d8e2cedaea2a8fb0"
+crs_id = "726e02b263b673d684def7377c98dfb53ee42480"
 
 # List of prefixed of URL endpoints for the public storage of the KMS.
 # The key in the map is the MPC ID of the party. I.e. [1; amount of parties]

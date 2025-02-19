@@ -23,7 +23,7 @@ if (!mnemonic) {
 
 const chainIds = {
   zama: 9000,
-  localCoprocessor: 12345,
+  localCoprocessor: 55482,
   local: 9000,
   ethereum: 1,
   sepolia: 11155111,

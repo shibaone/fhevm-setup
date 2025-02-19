@@ -10,7 +10,6 @@ services:
       - '5432:5432'
     volumes:
       - fhevm_coprocessor_db:/var/lib/postgresql/data
-
   fhevm-coprocessor:
     container_name: ${DOCKER_COMPOSE_PROJECT}-fhevm-coprocessor
     image: ghcr.io/zama-ai/fhevm-coprocessor:v0.6.0-6
@@ -31,7 +30,7 @@ services:
     entrypoint:
       - /bin/sh
       - -c
-      - mkdir -p /logs && geth init --state.scheme=hash --datadir=datadir genesis.json && geth
+      - mkdir -p /logs && geth init --state.scheme=hash --datadir=datadir genesis.json && geth --ipcpath=/tmp/geth.ipc
     environment:
       - GETH_AUTHRPC_ADDR=0.0.0.0
       - GETH_AUTHRPC_JWTSECRET=/root/jwt.txt
@@ -110,6 +109,71 @@ services:
       - type: bind
         source: ../rollup.json
         target: /app/rollup.json
+  op-batcher:
+    depends_on:
+      fhevm-geth:
+        condition: service_started
+        required: false
+      op-node:
+        condition: service_started
+        required: false
+    entrypoint:
+      - op-batcher
+    environment:
+      OP_BATCHER_L1_ETH_RPC: https://puppynet.shibrpc.com
+      OP_BATCHER_L2_ETH_RPC: http://fhevm-geth:8545
+      OP_BATCHER_MAX_CHANNEL_DURATION: "1"
+      OP_BATCHER_NUM_CONFIRMATIONS: "1"
+      OP_BATCHER_POLL_INTERVAL: 1s
+      OP_BATCHER_PRIVATE_KEY: 0x4b0a085d454838e3956ee3026ce071dccede638730bc0331d8e3bceb1366b841
+      OP_BATCHER_RESUBMISSION_TIMEOUT: 30s
+      OP_BATCHER_ROLLUP_RPC: http://op-node:8547
+      OP_BATCHER_RPC_ADDR: 0.0.0.0
+      OP_BATCHER_RPC_ENABLE_ADMIN: "true"
+      OP_BATCHER_RPC_PORT: "8548"
+      OP_BATCHER_SAFE_ABORT_NONCE_TOO_LOW_COUNT: "3"
+      OP_BATCHER_SUB_SAFETY_MARGIN: "6"
+    env_file:
+      - ../.env
+    image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-batcher:v1.9.0
+    ports:
+      - target: 8548
+        published: "8548"
+        protocol: tcp
+      - target: 9091
+        published: "9091"
+        protocol: tcp
+    restart: unless-stopped
+    stop_grace_period: 5m0s
+  op-proposer:
+    depends_on:
+      fhevm-geth:
+        condition: service_started
+        required: false
+      op-node:
+        condition: service_started
+        required: false
+    entrypoint:
+      - op-proposer
+    environment:
+      OP_PROPOSER_L1_ETH_RPC: https://puppynet.shibrpc.com
+      OP_PROPOSER_L2OO_ADDRESS: 0x5B4a756E1A6D8e634250804A3F5AFc11F3198636
+      OP_PROPOSER_POLL_INTERVAL: 12s
+      OP_PROPOSER_PRIVATE_KEY: 0x07c939ece03619d7bf585639faa1394893324c5b018bb4abd322615af3637717
+      OP_PROPOSER_ROLLUP_RPC: http://op-node:8547
+      OP_PROPOSER_RPC_PORT: "8560"
+    env_file:
+      - ../.env
+    image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-proposer:v1.9.0
+    ports:
+      - target: 8560
+        published: "8560"
+        protocol: tcp
+      - target: 9094
+        published: "9094"
+        protocol: tcp
+    restart: unless-stopped
+    stop_grace_period: 5m0s
 volumes:
   fhevm_coprocessor_db:
     driver: local

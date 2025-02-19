@@ -31,7 +31,7 @@ make prepare-e2e-test
 log "Deployment in progress. You can check the logs of zama-setup-fhevm-contracts if needed."
 log "To monitor: docker logs zama-setup-fhevm-contracts"
 
-timeout=140  # Timeout after 60 seconds
+timeout=240  # Timeout after 60 seconds
 while ! docker logs zama-setup-fhevm-contracts 2>&1 | grep -q "Deployment script completed successfully"; do
     sleep 10
     log "Waiting for fhevm contract deployment..."

@@ -32,7 +32,7 @@ echo Running Validator execution node
 export FORCE_TRANSIENT_STORAGE=true
 echo '' | nohup geth --datadir $NODE_DIR --port 30306 \
 	--bootnodes 'enode://0b7b41ca480f0ef4e1b9fa7323c3ece8ed42cb161eef5bf580c737fe2f33787de25a0c212c0ac7fdb429216baa3342c9b5493bd03122527ffb4c8c114d87f0a6@127.0.0.1:0?discport=30305' \
-	--networkid 55482 --unlock 0x1181A1FB7B6de97d4CB06Da82a0037DF1FFe32D0 \
+	--networkid 72028 --unlock 0x1181A1FB7B6de97d4CB06Da82a0037DF1FFe32D0 \
 	--authrpc.port 8551 --mine --miner.etherbase 0x1181A1FB7B6de97d4CB06Da82a0037DF1FFe32D0 > /var/log/val-executor.log &
 
 echo Running validator beacon node
@@ -50,7 +50,7 @@ nohup prysm-beacon --datadir=$NODE_DIR/consensus/beacondata \
 	--interop-eth1data-votes \
 	--chain-config-file=$NODE_DIR/consensus/config.yml \
 	--contract-deployment-block=0 \
-	--chain-id=55482 \
+	--chain-id=72028 \
 	--rpc-host=127.0.0.1 \
 	--grpc-gateway-host=127.0.0.1 \
 	--execution-endpoint=$NODE_DIR/geth.ipc \
@@ -86,7 +86,7 @@ nohup prysm-beacon --datadir=$NODE_DIR/consensus/beacondata \
   --interop-eth1data-votes \
   --chain-config-file=$NODE_DIR/consensus/config.yml \
   --contract-deployment-block=0 \
-  --chain-id=55482 \
+  --chain-id=72028 \
   --rpc-host=127.0.0.1 \
   --grpc-gateway-host=127.0.0.1 \
   --execution-endpoint=$NODE_DIR/geth.ipc \

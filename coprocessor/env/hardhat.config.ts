@@ -42,7 +42,7 @@ if (!mnemonic) {
 const chainIds = {
   zama: 8009,
   local: 9000,
-  localCoprocessor: 55482,
+  localCoprocessor: 72028,
   localNetwork1: 9000,
   multipleValidatorTestnet: 8009,
   sepolia: 11155111,

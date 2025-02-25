@@ -191,7 +191,7 @@ install-packages:
 	fi
 
 prepare-e2e-test: check-all-test-repo
-	@bash scripts/fund_tests_addresses_docker.sh
+	@#bash scripts/fund_tests_addresses_docker.sh
 	$(MAKE) setup-fhevm-contracts
 	@cp ./scripts/hardhat-compile.sh $(FHEVM_SOLIDITY_PATH)
 	@cp ./env/.env.example.deployment $(FHEVM_SOLIDITY_PATH)/.env

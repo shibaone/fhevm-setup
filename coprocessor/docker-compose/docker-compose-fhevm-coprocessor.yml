@@ -26,7 +26,8 @@ services:
       - --coprocessor-private-key=/usr/share/coprocessor.key
   fhevm-geth:
     container_name: ${DOCKER_COMPOSE_PROJECT}-fhevm-geth
-    image: shib-devrollup-go-eth-fhe:latest
+#    image: shib-devrollup-go-eth-fhe:latest
+    image: shib-devrollup-go-eth-elder-fhe:latest
     entrypoint:
       - /bin/sh
       - -c
@@ -61,6 +62,11 @@ services:
       - FHEVM_CIPHERTEXTS_DB=/datadir/fhevm_ciphertexts.sqlite
       - FHEVM_CONTRACT_ADDRESS=0x596E6682c72946AF006B27C131793F2b62527A4b
       - FORCE_TRANSIENT_STORAGE=true
+      - GETH_ELDER_SEQ=true
+      - GETH_ELDER_SEQ_URL=54.221.93.21:9090
+      - GETH_ELDER_ROLL_ID=3
+      - GETH_ELDER_ROLL_START_BLOCK=5
+      - GETH_ELDER_EXECUTOR=0x5a50c560c6c2422fc8b52afa52a0ec865579913fce8fc06703330bd1d381c427
     env_file:
       - ../.env
     volumes:
@@ -98,7 +104,8 @@ services:
       OP_NODE_VERIFIER_L1_CONFS: "4"
     env_file:
       - ../.env
-    image: 623062962206.dkr.ecr.us-east-1.amazonaws.com/op-node:dev
+#    image: 623062962206.dkr.ecr.us-east-1.amazonaws.com/op-node:dev
+    image: 623062962206.dkr.ecr.us-east-1.amazonaws.com/elder-op-node:dev
     ports:
       - target: 8547
         published: "8547"
